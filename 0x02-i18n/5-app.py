@@ -41,11 +41,14 @@ def index():
 
 @app.before_request
 def before_request():
-    """"""
+    """"use get_user to find a user if any
+    and set it as a global on flask.g.user"""
     g.user = get_user()
 
+
 def get_user():
-    """"""
+    """ function that returns a user dictionary or None
+    if the ID cannot be found or if login_as was not passed"""
     user_id = request.args.get('login_as')
     if user_id in users.keys():
         return users.get(int(user_id))
