@@ -27,9 +27,20 @@ app.config.from_object(Config)
 @babel.localeselector
 def get_locale():
     """determine the best match from supported languages"""
+    # locale from URL parameters
     locale = request.args.get('locale')
     if locale in app.config['LANGUAGES']:
         return locale
+    # locale from user settings
+    if g.user:
+        locale = g.user.get(locale)
+        if locale in app.config['LANGUAGES']:
+            return locale
+    # locale from request headers
+    locale = request.headers.get('locale')
+    if locale in app.config['LANGUAGES']:
+        return locale
+    # Default locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
@@ -39,6 +50,13 @@ def index():
     return render_template('5-index.html')
 
 
+@app.before_request
+def before_request():
+    """"use get_user to find a user if any
+    and set it as a global on flask.g.user"""
+    g.user = get_user()
+
+
 def get_user():
     """ function that returns a user dictionary or None
     if the ID cannot be found or if login_as was not passed"""
@@ -46,13 +64,6 @@ def get_user():
     if user_id in users.keys():
         return users.get(int(user_id))
     return None
-
-
-@app.before_request
-def before_request():
-    """"use get_user to find a user if any
-    and set it as a global on flask.g.user"""
-    g.user = get_user()
 
 
 if __name__ == '__main__':
