@@ -24,11 +24,9 @@ def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     """Displays value to html page"""
-    title = 'Welcome to Holberton'
-    body = 'Hello world'
     return render_template('3-index.html')
 
 
