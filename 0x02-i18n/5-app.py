@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Basic Flask app"""
-from flask import Flask, render_template, request
+from flask import Flask, render_template, requesti, g
 from flask_babel import Babel
 
 
-app = Flask(__name__)
-babel = Babel(app)
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -14,14 +12,16 @@ users = {
 }
 
 
-class Config():
+class Config(object):
     """" set Babel’s default locale and timezone"""
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
+app = Flask(__name__)
 app.config.from_object(Config)
+babel = Babel(app)
 
 
 @babel.localeselector
@@ -31,12 +31,6 @@ def get_locale():
     if locale in app.config['LANGUAGES']:
         return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-
-@app.route('/', strict_slashes=False)
-def index():
-    """Displays value to html page"""
-    return render_template('5-index.html')
 
 
 def get_user():
@@ -53,6 +47,12 @@ def before_request():
     """"use get_user to find a user if any
     and set it as a global on flask.g.user"""
     g.user = get_user()
+
+
+@app.route('/', strict_slashes=False)
+def index():
+    """Displays value to html page"""
+    return render_template('5-index.html')
 
 
 if __name__ == '__main__':
