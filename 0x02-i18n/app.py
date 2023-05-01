@@ -3,7 +3,7 @@
 import pytz
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-
+from datetime import datetime
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
