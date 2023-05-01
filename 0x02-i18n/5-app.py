@@ -36,8 +36,9 @@ def get_user():
     """ function that returns a user dictionary or None
     if the ID cannot be found or if login_as was not passed"""
     user_id = request.args.get('login_as')
-    if user_id in users.keys():
-        return users.get(int(user_id))
+    user_det = users.get(int(user_id))
+    if user_det:
+        return user_det
     return None
 
 
