@@ -84,7 +84,11 @@ def get_user():
 def before_request():
     """"use get_user to find a user if any
     and set it as a global on flask.g.user"""
-    g.user = get_user("%b %d, %Y, %I:%M:%S %p")
+    g.user = get_user()
+    now_utc = datetime.utcnow()
+    timezone = pytz.timezone(g.user.get('timezone'))
+    now_tz = now_utc.astimezone(timezone)
+    g.time = now_tz.strftime("%b %d, %Y, %I:%M:%S %p")
 
 
 @app.route('/', strict_slashes=False)
